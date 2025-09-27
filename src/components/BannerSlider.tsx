@@ -1,17 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { supabase } from "../lib/supabaseClient"; // pastikan sudah ada file supabaseClient.ts
+import { supabase } from "../lib/supabaseClient"; // pastikan ada file supabaseClient.ts
 
 type Banner = {
   id: number;
-  image: string; // URL gambar dari bucket Supabase
+  image: string; // path relatif dari DB, contoh: "/events/rhapsodie.jpg"
   link: string;
 };
 
 const BannerSlider = () => {
   const [current, setCurrent] = useState(0);
   const [banners, setBanners] = useState<Banner[]>([]);
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
   // Fetch data dari tabel Supabase
   useEffect(() => {
@@ -20,12 +22,16 @@ const BannerSlider = () => {
       if (error) {
         console.error("Error fetching banners:", error);
       } else {
-        setBanners(data || []);
+        const fixed = data?.map((item) => ({
+          ...item,
+          image: `${supabaseUrl}/storage/v1/object/public${item.image}`, 
+        }));
+        setBanners(fixed || []);
       }
     };
 
     fetchBanners();
-  }, []);
+  }, [supabaseUrl]);
 
   // Auto slide tiap 4 detik
   useEffect(() => {
