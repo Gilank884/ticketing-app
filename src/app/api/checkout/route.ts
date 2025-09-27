@@ -26,8 +26,8 @@ export async function POST(req: Request) {
         amount: total,
         payer_email: "customer@email.com", // TODO: ambil dari login form
         description: `Pembelian tiket untuk event ${eventId}`,
-        success_redirect_url: "https://hai-ticket.netlify.app", // ganti domain prod
-        failure_redirect_url: "https://hai-ticket.netlify.app",
+        success_redirect_url: "https://hai-ticket.netlify.app/success", // ganti domain prod
+        failure_redirect_url: "https://hai-ticket.netlify.app/failed",
       }),
     });
 
